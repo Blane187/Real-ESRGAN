@@ -1,3 +1,4 @@
+basicsr
 torch
 basicsr
 numpy
