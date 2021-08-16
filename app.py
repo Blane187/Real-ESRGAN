@@ -10,6 +10,13 @@ from subprocess import call
 for stuff in os.walk("."):
     print(stuff)
     
+with open("./permissions_test_file", "w") as file:
+  pass
+    
+with open("./experiments/permissions_test_file", "w") as file:
+  pass
+  
+    
 def run_cmd(command):
     try:
         print(command)
