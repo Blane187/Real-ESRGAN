@@ -3,3 +3,4 @@ numpy
 opencv-python
 torch>=1.7
 setuptools
+opencv-python-headless
