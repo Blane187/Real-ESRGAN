@@ -7,14 +7,7 @@ from random import randint
 import sys
 from subprocess import call
 
-for stuff in os.walk("."):
-    print(stuff)
     
-with open("./permissions_test_file", "w") as file:
-  pass
-    
-with open("./experiments/permissions_test_file", "w") as file:
-  pass
   
     
 def run_cmd(command):
@@ -24,7 +17,7 @@ def run_cmd(command):
     except KeyboardInterrupt:
         print("Process interrupted")
         sys.exit(1)
-run_cmd("wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P ./experiments/pretrained_models")
+run_cmd("wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P .")
 run_cmd("python setup.py develop")
 
 
