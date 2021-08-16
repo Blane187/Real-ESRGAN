@@ -1,6 +1,6 @@
+torch
 basicsr
 numpy
 opencv-python-headless
-torch>=1.7
 setuptools
 
