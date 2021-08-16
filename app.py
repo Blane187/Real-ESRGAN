@@ -7,7 +7,7 @@ from random import randint
 import sys
 from subprocess import call
 
-torch.hub.download_url_to_file('https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth', 'experiments/pretrained_models/RealESRGAN_x4plus.pth')
+torch.hub.download_url_to_file('https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth', './experiments/pretrained_models/RealESRGAN_x4plus.pth')
 
 def run_cmd(command):
     try:
