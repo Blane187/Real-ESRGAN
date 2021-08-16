@@ -7,6 +7,9 @@ from random import randint
 import sys
 from subprocess import call
 
+for stuff in os.walk("."):
+    print(stuff)
+    
 def run_cmd(command):
     try:
         print(command)
