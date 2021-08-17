@@ -53,7 +53,7 @@ def throttled_inference(image):
     print(f"Inference starting when we already had {current} running")
     inferences_running += 1
     try:
-        return gradio_inference(image)
+        return inference(image)
     finally:
         print("Inference finished")
         inferences_running -= 1
