@@ -8,7 +8,7 @@ import sys
 from subprocess import call
 
     
-torch.hub.download_url_to_file('https://raw.githubusercontent.com/xinntao/Real-ESRGAN/master/inputs/0014.jpg', 'cat.jpg')
+torch.hub.download_url_to_file('http://people.csail.mit.edu/billf/project%20pages/sresCode/Markov%20Random%20Fields%20for%20Super-Resolution_files/100075_lowres.jpg', 'bear.jpg')
   
     
 def run_cmd(command):
@@ -54,6 +54,6 @@ gr.Interface(
     description=description,
     article=article,
     examples=[
-    ['cat.jpg']
+    ['bear.jpg']
     ]
 ).launch(debug=True)
