@@ -4,3 +4,4 @@ opencv-python-headless
 setuptools
 Pillow
 gradio
+torchvision
