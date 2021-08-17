@@ -41,7 +41,7 @@ def inference(img):
     hsize = int((float(img.size[1])*float(wpercent)))
     img = img.resize((basewidth,hsize), Image.ANTIALIAS)
     img.save(INPUT_DIR + "1.jpg", "JPEG")
-    run_cmd("python inference_realesrgan.py --model_path RealESRGAN_x4plus.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR + " --netscale 4 --outscale 3.5")
+    run_cmd("python inference_realesrgan.py --model_path RealESRGAN_x4plus.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR + " --netscale 4 --outscale 3.5 --tile 16")
     return os.path.join(OUTPUT_DIR, "1_out.jpg")
 
 inferences_running = 0
