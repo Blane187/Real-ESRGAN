@@ -15,3 +15,4 @@ scipy
 tb-nightly
 tqdm
 yapf
+psutil
