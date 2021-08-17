@@ -5,3 +5,13 @@ setuptools
 Pillow
 gradio
 torchvision
+addict
+future
+lmdb
+pyyaml
+requests
+scikit-image
+scipy
+tb-nightly
+tqdm
+yapf
