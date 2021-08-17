@@ -47,7 +47,7 @@ inferences_running = 0
 def throttled_inference(image):
     global inferences_running
     current = inferences_running
-    if current >= 2:
+    if current >= 1:
         print(f"Rejected inference when we already had {current} running")
         return "cpu.jpg"
     print(f"Inference starting when we already had {current} running")
