@@ -8,7 +8,7 @@ import sys
 from subprocess import call
 
     
-torch.hub.download_url_to_file('https://images.pexels.com/photos/1668928/pexels-photo-1668928.jpeg', 'city.jpeg')
+torch.hub.download_url_to_file('https://raw.githubusercontent.com/xinntao/Real-ESRGAN/master/inputs/0014.jpg', 'cat.jpg')
   
     
 def run_cmd(command):
@@ -43,7 +43,7 @@ def inference(img):
 
   
 title = "Real-ESRGAN"
-description = "demo for Real-ESRGAN. To use it, simply upload your image, or click one of the examples to load them. Read more at the links below."
+description = "Gradio demo for Real-ESRGAN. To use it, simply upload your image, or click one of the examples to load them. Read more at the links below."
 article = "<p style='text-align: center'><a href='https://arxiv.org/abs/2107.10833'>Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data</a> | <a href='https://github.com/xinntao/Real-ESRGAN'>Github Repo</a></p>"
 
 gr.Interface(
@@ -54,6 +54,6 @@ gr.Interface(
     description=description,
     article=article,
     examples=[
-    ['city.jpeg']
+    ['cat.jpg']
     ]
 ).launch(debug=True)
