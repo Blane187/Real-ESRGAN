@@ -1,5 +1,4 @@
 torch>=1.7
-basicsr
 numpy
 opencv-python-headless
 setuptools
