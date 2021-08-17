@@ -6,6 +6,7 @@ import torch
 from random import randint
 import sys
 from subprocess import call
+import psutil
 
 torch.hub.download_url_to_file('https://i.imgur.com/tXrot31.jpg', 'cpu.jpg')
 
@@ -45,6 +46,7 @@ def inference(img):
 
 inferences_running = 0
 def throttled_inference(image):
+    print(psutil.virtual_memory())
     global inferences_running
     current = inferences_running
     if current >= 1:
@@ -57,6 +59,7 @@ def throttled_inference(image):
     finally:
         print("Inference finished")
         inferences_running -= 1
+        print(psutil.virtual_memory())
 
         
 title = "Real-ESRGAN"
