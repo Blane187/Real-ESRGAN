@@ -53,7 +53,7 @@ description = "Gradio demo for Real-ESRGAN. To use it, simply upload your image,
 article = "<p style='text-align: center'><a href='https://arxiv.org/abs/2107.10833'>Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data</a> | <a href='https://github.com/xinntao/Real-ESRGAN'>Github Repo</a></p>"
 
 gr.Interface(
-    throttled_inference, 
+    inference, 
     [gr.inputs.Image(type="pil", label="Input")], 
     gr.outputs.Image(type="file", label="Output"),
     title=title,
