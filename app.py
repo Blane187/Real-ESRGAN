@@ -1,4 +1,6 @@
 import os
+os.system('pip install gradio --upgrade')
+os.system('pip freeze')
 import random
 import gradio as gr
 from PIL import Image
@@ -8,7 +10,6 @@ import sys
 from subprocess import call
 import psutil
 
-torch.hub.download_url_to_file('https://i.imgur.com/tXrot31.jpg', 'cpu.jpg')
 
 
 torch.hub.download_url_to_file('http://people.csail.mit.edu/billf/project%20pages/sresCode/Markov%20Random%20Fields%20for%20Super-Resolution_files/100075_lowres.jpg', 'bear.jpg')
@@ -44,22 +45,7 @@ def inference(img):
     run_cmd("python inference_realesrgan.py --model_path RealESRGAN_x4plus.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR + " --netscale 4 --outscale 3.5")
     return os.path.join(OUTPUT_DIR, "1_out.jpg")
 
-inferences_running = 0
-def throttled_inference(image):
-    print(psutil.virtual_memory())
-    global inferences_running
-    current = inferences_running
-    if current >= 1:
-        print(f"Rejected inference when we already had {current} running")
-        return "cpu.jpg"
-    print(f"Inference starting when we already had {current} running")
-    inferences_running += 1
-    try:
-        return inference(image)
-    finally:
-        print("Inference finished")
-        inferences_running -= 1
-        print(psutil.virtual_memory())
+
 
         
 title = "Real-ESRGAN"
@@ -75,5 +61,6 @@ gr.Interface(
     article=article,
     examples=[
     ['bear.jpg']
-    ]
-).launch(debug=True)
+    ],
+    enable_queue=True
+    ).launch(debug=True)
