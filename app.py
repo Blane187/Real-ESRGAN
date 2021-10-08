@@ -1,6 +1,5 @@
 import os
 os.system('pip install gradio==2.3.0a0')
-os.system('pip freeze')
 import random
 import gradio as gr
 from PIL import Image
