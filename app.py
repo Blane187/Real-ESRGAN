@@ -62,7 +62,8 @@ gr.Interface(
     description=description,
     article=article,
     examples=[
-    ['bear.jpg']
+    ['bear.jpg','base'],
+    ['anime.png','anime']
     ],
     enable_queue=True
     ).launch(debug=True)
