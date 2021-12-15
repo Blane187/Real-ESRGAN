@@ -55,7 +55,7 @@ article = "<p style='text-align: center'><a href='https://arxiv.org/abs/2107.108
 
 gr.Interface(
     inference, 
-    [gr.inputs.Image(type="pil", label="Input"),gradio.inputs.Radio(["base","anime"], type="value", default="base", label="model type")], 
+    [gr.inputs.Image(type="pil", label="Input"),gr.inputs.Radio(["base","anime"], type="value", default="base", label="model type")], 
     gr.outputs.Image(type="file", label="Output"),
     title=title,
     description=description,
