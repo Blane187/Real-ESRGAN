@@ -41,9 +41,9 @@ def inference(img,mode):
     img = img.resize((basewidth,hsize), Image.ANTIALIAS)
     img.save(INPUT_DIR + "1.jpg", "JPEG")
     if mode == "base":
-        run_cmd("python inference_realesrgan.py --model_name RealESRGAN_x4plus.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR + " --netscale 4 --outscale 4")
+        run_cmd("python inference_realesrgan.py --model_path RealESRGAN_x4plus.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR + " --netscale 4 --outscale 4")
     else:
-        os.system("python inference_realesrgan.py --model_name RealESRGAN_x4plus_anime_6B.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR)
+        os.system("python inference_realesrgan.py --model_path RealESRGAN_x4plus_anime_6B.pth --input "+ INPUT_DIR + " --output " + OUTPUT_DIR)
     return os.path.join(OUTPUT_DIR, "1_out.jpg")
 
 
