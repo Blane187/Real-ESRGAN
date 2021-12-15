@@ -1,4 +1,7 @@
 import os
+os.system("git clone https://github.com/xinntao/Real-ESRGAN.git")
+os.chdir("Real-ESRGAN")
+os.system("pwd")
 import random
 import gradio as gr
 from PIL import Image
@@ -7,6 +10,7 @@ from random import randint
 import sys
 from subprocess import call
 import psutil
+
 
 
 
