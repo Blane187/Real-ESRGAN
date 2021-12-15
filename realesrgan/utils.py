@@ -2,18 +2,31 @@ import cv2
 import math
 import numpy as np
 import os
+import queue
+import threading
 import torch
-from basicsr.archs.rrdbnet_arch import RRDBNet
-from torch.hub import download_url_to_file, get_dir
+from basicsr.utils.download_util import load_file_from_url
 from torch.nn import functional as F
-from urllib.parse import urlparse
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class RealESRGANer():
+    """A helper class for upsampling images with RealESRGAN.
 
-    def __init__(self, scale, model_path, tile=0, tile_pad=10, pre_pad=10, half=False):
+    Args:
+        scale (int): Upsampling scale factor used in the networks. It is usually 2 or 4.
+        model_path (str): The path to the pretrained model. It can be urls (will first download it automatically).
+        model (nn.Module): The defined network. Default: None.
+        tile (int): As too large images result in the out of GPU memory issue, so this tile option will first crop
+            input images into tiles, and then process each of them. Finally, they will be merged into one image.
+            0 denotes for do not use tile. Default: 0.
+        tile_pad (int): The pad size for each tile, to remove border artifacts. Default: 10.
+        pre_pad (int): Pad the input images to avoid border artifacts. Default: 10.
+        half (float): Whether to use half precision during inference. Default: False.
+    """
+
+    def __init__(self, scale, model_path, model=None, tile=0, tile_pad=10, pre_pad=10, half=False):
         self.scale = scale
         self.tile_size = tile
         self.tile_pad = tile_pad
@@ -23,12 +36,12 @@ class RealESRGANer():
 
         # initialize model
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=scale)
-
+        # if the model_path starts with https, it will first download models to the folder: realesrgan/weights
         if model_path.startswith('https://'):
             model_path = load_file_from_url(
-                url=model_path, model_dir='realesrgan/weights', progress=True, file_name=None)
-        loadnet = torch.load(model_path)
+                url=model_path, model_dir=os.path.join(ROOT_DIR, 'realesrgan/weights'), progress=True, file_name=None)
+        loadnet = torch.load(model_path, map_location=torch.device('cpu'))
+        # prefer to use params_ema
         if 'params_ema' in loadnet:
             keyname = 'params_ema'
         else:
@@ -40,6 +53,8 @@ class RealESRGANer():
             self.model = self.model.half()
 
     def pre_process(self, img):
+        """Pre-process, such as pre-pad and mod pad, so that the images can be divisible
+        """
         img = torch.from_numpy(np.transpose(img, (2, 0, 1))).float()
         self.img = img.unsqueeze(0).to(self.device)
         if self.half:
@@ -48,7 +63,7 @@ class RealESRGANer():
         # pre_pad
         if self.pre_pad != 0:
             self.img = F.pad(self.img, (0, self.pre_pad, 0, self.pre_pad), 'reflect')
-        # mod pad
+        # mod pad for divisible borders
         if self.scale == 2:
             self.mod_scale = 2
         elif self.scale == 1:
@@ -63,10 +78,14 @@ class RealESRGANer():
             self.img = F.pad(self.img, (0, self.mod_pad_w, 0, self.mod_pad_h), 'reflect')
 
     def process(self):
+        # model inference
         self.output = self.model(self.img)
 
     def tile_process(self):
-        """Modified from: https://github.com/ata4/esrgan-launcher
+        """It will first crop input images to tiles, and then process each tile.
+        Finally, all the processed tiles are merged into one images.
+
+        Modified from: https://github.com/ata4/esrgan-launcher
         """
         batch, channel, height, width = self.img.shape
         output_height = height * self.scale
@@ -106,7 +125,7 @@ class RealESRGANer():
                 try:
                     with torch.no_grad():
                         output_tile = self.model(input_tile)
-                except Exception as error:
+                except RuntimeError as error:
                     print('Error', error)
                 print(f'\tTile {tile_idx}/{tiles_x * tiles_y}')
 
@@ -143,7 +162,7 @@ class RealESRGANer():
         h_input, w_input = img.shape[0:2]
         # img: numpy
         img = img.astype(np.float32)
-        if np.max(img) > 255:  # 16-bit image
+        if np.max(img) > 256:  # 16-bit image
             max_range = 65535
             print('\tInput is a 16-bit image')
         else:
@@ -187,7 +206,7 @@ class RealESRGANer():
                 output_alpha = output_alpha.data.squeeze().float().cpu().clamp_(0, 1).numpy()
                 output_alpha = np.transpose(output_alpha[[2, 1, 0], :, :], (1, 2, 0))
                 output_alpha = cv2.cvtColor(output_alpha, cv2.COLOR_BGR2GRAY)
-            else:
+            else:  # use the cv2 resize for alpha channel
                 h, w = alpha.shape[0:2]
                 output_alpha = cv2.resize(alpha, (w * self.scale, h * self.scale), interpolation=cv2.INTER_LINEAR)
 
@@ -211,21 +230,51 @@ class RealESRGANer():
         return output, img_mode
 
 
-def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
-    """Ref:https://github.com/1adrianb/face-alignment/blob/master/face_alignment/utils.py
+class PrefetchReader(threading.Thread):
+    """Prefetch images.
+
+    Args:
+        img_list (list[str]): A image list of image paths to be read.
+        num_prefetch_queue (int): Number of prefetch queue.
     """
-    if model_dir is None:
-        hub_dir = get_dir()
-        model_dir = os.path.join(hub_dir, 'checkpoints')
 
-    os.makedirs(os.path.join(ROOT_DIR, model_dir), exist_ok=True)
+    def __init__(self, img_list, num_prefetch_queue):
+        super().__init__()
+        self.que = queue.Queue(num_prefetch_queue)
+        self.img_list = img_list
 
-    parts = urlparse(url)
-    filename = os.path.basename(parts.path)
-    if file_name is not None:
-        filename = file_name
-    cached_file = os.path.abspath(os.path.join(ROOT_DIR, model_dir, filename))
-    if not os.path.exists(cached_file):
-        print(f'Downloading: "{url}" to {cached_file}\n')
-        download_url_to_file(url, cached_file, hash_prefix=None, progress=progress)
-    return cached_file
+    def run(self):
+        for img_path in self.img_list:
+            img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
+            self.que.put(img)
+
+        self.que.put(None)
+
+    def __next__(self):
+        next_item = self.que.get()
+        if next_item is None:
+            raise StopIteration
+        return next_item
+
+    def __iter__(self):
+        return self
+
+
+class IOConsumer(threading.Thread):
+
+    def __init__(self, opt, que, qid):
+        super().__init__()
+        self._queue = que
+        self.qid = qid
+        self.opt = opt
+
+    def run(self):
+        while True:
+            msg = self._queue.get()
+            if isinstance(msg, str) and msg == 'quit':
+                break
+
+            output = msg['output']
+            save_path = msg['save_path']
+            cv2.imwrite(save_path, output)
+        print(f'IO worker {self.qid} is done.')
