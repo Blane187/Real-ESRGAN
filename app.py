@@ -1,8 +1,4 @@
 import os
-os.system("git clone https://github.com/xinntao/Real-ESRGAN.git")
-os.chdir("Real-ESRGAN")
-os.system("pwd")
-os.system("pip install realesrgan")
 import random
 import gradio as gr
 from PIL import Image
