@@ -65,4 +65,4 @@ gr.Interface(
     examples=[
     ['bear.jpg','base'],
     ['anime.png','anime']
-    ]).launch(enable_queue=True,cache_examples=True)
+    ]).launch()
