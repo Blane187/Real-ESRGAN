@@ -40,7 +40,7 @@ def inference(img,mode):
     basewidth = 256
     wpercent = (basewidth/float(img.size[0]))
     hsize = int((float(img.size[1])*float(wpercent)))
-    img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+    img = img.resize((basewidth,hsize), Image.LANCZOS)
     img.save(INPUT_DIR + "1.jpg", "JPEG")
     if mode == "base":
         run_cmd("python inference_realesrgan.py -n RealESRGAN_x4plus -i "+ INPUT_DIR + " -o " + OUTPUT_DIR)
