@@ -55,7 +55,7 @@ title = "Real-ESRGAN"
 description = "Gradio demo for Real-ESRGAN. To use it, simply upload your image, or click one of the examples to load them. Read more at the links below. Please click submit only once"
 article = "<p style='text-align: center'><a href='https://arxiv.org/abs/2107.10833'>Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data</a> | <a href='https://github.com/xinntao/Real-ESRGAN'>Github Repo</a></p>"
 
-gr.Interface(
+app gr.Interface(
     inference, 
     theme='Hev832/soft',
     [gr.inputs.Image(type="pil", label="Input"),gr.inputs.Radio(["base","anime"], type="value", default="base", label="model type")], 
@@ -65,4 +65,6 @@ gr.Interface(
     article=article,
     examples=[
     ['bear.jpg','base'],
-    ['anime.png','anime']).launch(debug=True, share=True)
+    ['anime.png','anime'])
+
+app.launch(debug=True, share=True)
