@@ -1,34 +1,10 @@
----
-title: Real ESRGAN
-emoji: 🏃
-colorFrom: blue
-colorTo: blue
-sdk: gradio
-sdk_version: 3.1.7
-app_file: app.py
-pinned: false
----
+<p align="center">
+  <img src="https://raw.githubusercontent.com/xinntao/Real-ESRGAN/master/assets/realesrgan_logo.png" height=120>
+</p>
 
-# Configuration
 
-`title`: _string_  
-Display title for the Space
+<div align="center">
 
-`emoji`: _string_  
-Space emoji (emoji-only character allowed)
 
-`colorFrom`: _string_  
-Color for Thumbnail gradient (red, yellow, green, blue, indigo, purple, pink, gray)
-
-`colorTo`: _string_  
-Color for Thumbnail gradient (red, yellow, green, blue, indigo, purple, pink, gray)
-
-`sdk`: _string_  
-Can be either `gradio` or `streamlit`
-
-`app_file`: _string_  
-Path to your main application file (which contains either `gradio` or `streamlit` Python code).  
-Path is relative to the root of the repository.
-
-`pinned`: _boolean_  
-Whether the Space stays on top of your list.
+Real-ESRGAN aims at developing **Practical Algorithms for General Image/Video Restoration** gradio ver.<br>
+We extend the powerful ESRGAN to a practical restoration application (namely, Real-ESRGAN), which is trained with pure synthetic data. 
