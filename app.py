@@ -51,20 +51,17 @@ def inference(img,mode):
 
 
         
-title = "Real-ESRGAN"
-description = "Gradio demo for Real-ESRGAN. To use it, simply upload your image, or click one of the examples to load them. Read more at the links below. Please click submit only once"
-article = "<p style='text-align: center'><a href='https://arxiv.org/abs/2107.10833'>Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data</a> | <a href='https://github.com/xinntao/Real-ESRGAN'>Github Repo</a></p>"
 
-app gr.Interface(
-    inference, 
-    theme='Hev832/soft',
-    [gr.inputs.Image(type="pil", label="Input"),gr.inputs.Radio(["base","anime"], type="value", default="base", label="model type")], 
-    gr.outputs.Image(type="file", label="Output"),
-    title=title,
-    description=description,
-    article=article,
-    examples=[
-    ['bear.jpg','base'],
-    ['anime.png','anime']
+inputs = [
+    gr.inputs.Image(type="pil", label="Upload Image"),
+    gr.inputs.Radio(["base", "anime"], label="Mode")
+]
+output = gr.outputs.Image(type="pil", label="Enhanced Image")
 
-app.launch(debug=True, share=True)
+title = "Real-ESRGAN Demo"
+description = "Enhance your images using Real-ESRGAN."
+examples = [["example_image.jpg", "base"], ["example_image.jpg", "anime"]]
+
+theme = 'Hev832/soft'
+
+gr.Interface(inference, inputs, output, title=title, description=description, examples=examples, theme=theme).launch()
