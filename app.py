@@ -65,6 +65,6 @@ app gr.Interface(
     article=article,
     examples=[
     ['bear.jpg','base'],
-    ['anime.png','anime'])
+    ['anime.png','anime']
 
 app.launch(debug=True, share=True)
