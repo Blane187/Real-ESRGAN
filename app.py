@@ -64,4 +64,4 @@ examples = [["example_image.jpg", "base"], ["example_image.jpg", "anime"]]
 
 #theme = 'Hev832/soft'
 
-gr.Interface(inference, inputs, output, title=title, description=description, examples=examples, theme='Hev832/soft').launch()
+gr.Interface(inference, inputs, output, title=title, description=description, examples=examples).launch()
